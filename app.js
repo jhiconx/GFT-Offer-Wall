@@ -1,11 +1,10 @@
 const offers = [
-  {id:'hershey',brand:"Hershey's",product:"Cookies 'n' Creme",category:'Food',mechanic:'Sample Program',headline:'Earn up to $200',funding:'Brand funded',timing:'Demo window',audience:'Eligible shoppers',status:'NEW',chi:5,budget:1000,tile1:'#61c8e7',tile2:'#244a83',label:'HERSHEY'},
-  {id:'drpepper',brand:'Dr Pepper',product:'12 fl oz',category:'Drinks',mechanic:'BOGO',headline:'Earn up to $100',funding:'Brand funded',timing:'Demo window',audience:'Eligible shoppers',status:'NEW',chi:5,budget:750,tile1:'#9e1823',tile2:'#3c0f18',label:'DR PEPPER'},
-  {id:'redbull',brand:'Red Bull',product:'12 fl oz',category:'Drinks',mechanic:'Sample Program',headline:'Earn up to $400',funding:'Brand funded',timing:'Demo window',audience:'Eligible shoppers',status:'NEW',chi:10,budget:1500,tile1:'#0c66c7',tile2:'#c62c2e',label:'RED BULL'},
-  {id:'doritos',brand:'Doritos',product:'Cheese Supreme 20 oz',category:'Food',mechanic:'Free with $10 purchase',headline:'Earn up to $150',funding:'Brand funded',timing:'Demo window',audience:'Eligible shoppers',status:'OPEN',chi:5,budget:900,tile1:'#dc341f',tile2:'#e58910',label:'DORITOS'},
-  {id:'crush',brand:'Crush',product:'12-Pack',category:'Drinks',mechanic:'Unlock offer + Chili Rewards',headline:'CHI-enabled shopper offer',funding:'Brand funded',timing:'Demo window',audience:'Eligible shoppers',status:'OPEN',chi:10,budget:2000,tile1:'#f26d1d',tile2:'#ffb429',label:'CRUSH'},
-  {id:'icebreakers',brand:'Ice Breakers',product:'Ice Cubes Cinnamon',category:'Food',mechanic:'Sample Program',headline:'Earn up to $180',funding:'Brand funded',timing:'Demo window',audience:'Eligible shoppers',status:'OPEN',chi:5,budget:600,tile1:'#ce2430',tile2:'#8a1122',label:'ICE BREAKERS'},
-  {id:'clean',brand:'Germ-X',product:'Hand Sanitizer',category:'Other',mechanic:'Sample Program',headline:'Earn up to $180',funding:'Brand funded',timing:'Demo window',audience:'Eligible shoppers',status:'OPEN',chi:5,budget:500,tile1:'#7dc96d',tile2:'#16786b',label:'GERM-X'}
+  {id:'hershey',brand:"Hershey's",product:"Cookies 'n' Creme",category:'Food',mechanic:'Sample Program',headline:'Earn up to $200',funding:'Brand funded',timing:'Jan 1 – Feb 28, 2025',audience:'All eligible stores',status:'NEW',chi:5,budget:1000,image:'assets/brands/hershey.png'},
+  {id:'drpepper',brand:'Dr Pepper',product:'12 fl oz',category:'Drinks',mechanic:'BOGO',headline:'Earn up to $100',funding:'Brand funded',timing:'Jan 1 – Feb 28, 2025',audience:'All eligible stores',status:'NEW',chi:5,budget:750,image:'assets/brands/drpepper.png'},
+  {id:'redbull',brand:'Red Bull',product:'12 fl oz',category:'Drinks',mechanic:'Sample Program',headline:'Earn up to $400',funding:'Brand funded',timing:'Jan 1 – Feb 28, 2025',audience:'All eligible stores',status:'NEW',chi:10,budget:1500,image:'assets/brands/redbull.png'},
+  {id:'doritos',brand:'Doritos',product:'Cheese Supreme 20 oz',category:'Food',mechanic:'Free with $10 purchase',headline:'Earn up to $150',funding:'Brand funded',timing:'Jan 1 – Feb 28, 2025',audience:'All eligible stores',status:'OPEN',chi:5,budget:900,image:'assets/brands/doritos.png'},
+  {id:'crush',brand:'Crush',product:'12-Pack',category:'Drinks',mechanic:'Unlock offer + Chili Rewards',headline:'Earn up to $300',funding:'Brand funded',timing:'Jan 1 – Feb 28, 2025',audience:'All eligible stores',status:'OPEN',chi:10,budget:2000,image:'assets/brands/crush.png'},
+  {id:'icebreakers',brand:'Ice Breakers',product:'Ice Cubes Cinnamon',category:'Food',mechanic:'Sample Program',headline:'Earn up to $250',funding:'Brand funded',timing:'Jan 1 – Feb 28, 2025',audience:'All eligible stores',status:'OPEN',chi:5,budget:600,image:'assets/brands/icebreakers.png'}
 ];
 
 let currentCategory = 'All';
@@ -21,7 +20,10 @@ const drawer = document.getElementById('offerDrawer');
 const backdrop = document.getElementById('drawerBackdrop');
 
 function offerVisual(o, extra=''){
-  return `<div class="offer-visual ${extra}" style="--tile1:${o.tile1};--tile2:${o.tile2}"><b>${o.label}</b></div>`;
+  if (o.image) {
+    return `<div class="offer-visual image-visual ${extra}"><img src="${o.image}" alt="${o.brand} brand banner" loading="lazy" /></div>`;
+  }
+  return `<div class="offer-visual ${extra}"><b>${o.brand}</b></div>`;
 }
 
 function renderOffers(){
