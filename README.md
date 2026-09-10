@@ -1,21 +1,27 @@
-# GFT Rewards Offer Wall — Modernized Prototype
+# GFT Offer Wall
 
-Static HTML/CSS/JavaScript prototype designed for GitHub + Vercel.
+Working static PWA prototype for GitHub + Vercel.
 
-## Product concept
+## What the demo does
 
-The Offer Wall is a grocer-facing intake layer for brand-funded offers. A manager or authorized associate can review a brand opportunity, check whether the product is supported by current inventory, and approve it for an AI-assisted campaign build in GFT Rewards.
+- Brand-funded promotion inbox for store managers / authorized associates
+- Search and category filters
+- Offer review drawer with AI-structured offer details
+- Required inventory gate: In stock / Low stock / Out of stock
+- Chili Rewards configuration with demo CHI shopper reward and budget
+- AI-assisted campaign-build simulation
+- Session-persistent demo campaigns using browser localStorage
+- Final handoff button to https://admin.gftrewards.com/
+- Installable PWA manifest and offline cache service worker
+- Responsive desktop and mobile layouts
 
-## Demo flow
+## Important demo boundary
 
-1. Brand opportunity appears in the Offer Wall.
-2. Store manager reviews the structured offer brief.
-3. Manager selects In stock, Low stock, or Out of stock.
-4. Eligible offers can be accepted and structured into GFT campaign fields.
-5. The prototype finishes with a handoff to https://admin.gftrewards.com/.
+All offer dates, inventory states, reward quantities, budgets, and campaign builds shown in this repository are demo values. The prototype does not write to live GFT Rewards, POS, inventory, wallet, or blockchain systems.
 
-The demo is simulated. It does not submit live inventory, brand responses, or campaigns.
+## Deploy to GitHub + Vercel
 
-## Deploy with GitHub + Vercel
+1. Create/open the GitHub repository named **GFT Offer Wall** and upload the contents of this folder at the repository root.
+2. In Vercel, import the GitHub repository. Framework Preset: **Other**. Build Command: leave blank. Output Directory: leave blank. Deploy.
 
-Create a repository, upload the files in this folder, and import the repository into Vercel. No build command is required because the prototype is static.
+The project is plain HTML/CSS/JavaScript and requires no package install or build process.

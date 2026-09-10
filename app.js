@@ -1,305 +1,164 @@
 const offers = [
-  {
-    id: 'crush', brand: 'Keurig Dr Pepper · Crush', product: 'Crush 12-Pack', category: 'Drinks',
-    headline: 'Sampling program + shopper reward', value: 'Brand funded', status: 'NEW',
-    tile: 'CRUSH', bg: '#ffb33a', fg: '#8a2a00',
-    timing: 'Limited time', funding: 'Brand-funded', mechanic: 'Sample + redemption', audience: 'Participating shoppers'
-  },
-  {
-    id: 'hershey', brand: "Hershey's Cookies 'n' Creme", product: '1.55 oz bar', category: 'Food',
-    headline: 'Sample Program, Earn up to $200', value: 'Up to $200', status: 'NEW',
-    tile: 'HERSHEY', bg: '#7bd7f3', fg: '#23323b',
-    timing: 'While supplies last', funding: 'Brand-funded', mechanic: 'Sampling', audience: 'Eligible shoppers'
-  },
-  {
-    id: 'drpepper', brand: 'Dr Pepper', product: '12 fl oz.', category: 'Drinks',
-    headline: 'BOGO, Earn up to $100', value: 'Up to $100', status: 'NEW',
-    tile: 'DR\nPEPPER', bg: '#ffad35', fg: '#761421',
-    timing: 'While supplies last', funding: 'Brand-funded', mechanic: 'BOGO', audience: 'Eligible shoppers'
-  },
-  {
-    id: 'redbull', brand: 'Red Bull', product: '12 fl oz.', category: 'Drinks',
-    headline: 'Sample Program, Earn up to $400', value: 'Up to $400', status: 'OPEN',
-    tile: 'RED\nBULL', bg: '#76e2a0', fg: '#164a70',
-    timing: 'While supplies last', funding: 'Brand-funded', mechanic: 'Sampling', audience: 'Eligible shoppers'
-  },
-  {
-    id: 'doritos', brand: 'Doritos', product: 'Cheese Supreme 20 oz', category: 'Food',
-    headline: 'Free with $10 purchase, Earn up to $150', value: 'Up to $150', status: 'OPEN',
-    tile: 'DORITOS', bg: '#f4e74a', fg: '#6f1515',
-    timing: 'While supplies last', funding: 'Brand-funded', mechanic: 'Basket threshold', audience: 'Eligible shoppers'
-  },
-  {
-    id: 'germx', brand: 'Germ-X', product: 'Hand sanitizer 2 fl oz.', category: 'Other',
-    headline: 'Sample Program, Earn up to $180', value: 'Up to $180', status: 'OPEN',
-    tile: 'GERM-X', bg: '#ee1717', fg: '#fff',
-    timing: 'While supplies last', funding: 'Brand-funded', mechanic: 'Sampling', audience: 'Eligible shoppers'
-  },
-  {
-    id: 'icebreakers', brand: 'Ice Breakers', product: 'Ice Cubes Cinnamon 40 pc', category: 'Food',
-    headline: 'Sample Program, Earn up to $120', value: 'Up to $120', status: 'OPEN',
-    tile: 'ICE\nCUBES', bg: '#ffe34b', fg: '#7d1431',
-    timing: 'While supplies last', funding: 'Brand-funded', mechanic: 'Sampling', audience: 'Eligible shoppers'
-  }
+  {id:'hershey',brand:"Hershey's",product:"Cookies 'n' Creme",category:'Food',mechanic:'Sample Program',headline:'Earn up to $200',funding:'Brand funded',timing:'Demo window',audience:'Eligible shoppers',status:'NEW',chi:5,budget:1000,tile1:'#61c8e7',tile2:'#244a83',label:'HERSHEY'},
+  {id:'drpepper',brand:'Dr Pepper',product:'12 fl oz',category:'Drinks',mechanic:'BOGO',headline:'Earn up to $100',funding:'Brand funded',timing:'Demo window',audience:'Eligible shoppers',status:'NEW',chi:5,budget:750,tile1:'#9e1823',tile2:'#3c0f18',label:'DR PEPPER'},
+  {id:'redbull',brand:'Red Bull',product:'12 fl oz',category:'Drinks',mechanic:'Sample Program',headline:'Earn up to $400',funding:'Brand funded',timing:'Demo window',audience:'Eligible shoppers',status:'NEW',chi:10,budget:1500,tile1:'#0c66c7',tile2:'#c62c2e',label:'RED BULL'},
+  {id:'doritos',brand:'Doritos',product:'Cheese Supreme 20 oz',category:'Food',mechanic:'Free with $10 purchase',headline:'Earn up to $150',funding:'Brand funded',timing:'Demo window',audience:'Eligible shoppers',status:'OPEN',chi:5,budget:900,tile1:'#dc341f',tile2:'#e58910',label:'DORITOS'},
+  {id:'crush',brand:'Crush',product:'12-Pack',category:'Drinks',mechanic:'Unlock offer + Chili Rewards',headline:'CHI-enabled shopper offer',funding:'Brand funded',timing:'Demo window',audience:'Eligible shoppers',status:'OPEN',chi:10,budget:2000,tile1:'#f26d1d',tile2:'#ffb429',label:'CRUSH'},
+  {id:'icebreakers',brand:'Ice Breakers',product:'Ice Cubes Cinnamon',category:'Food',mechanic:'Sample Program',headline:'Earn up to $180',funding:'Brand funded',timing:'Demo window',audience:'Eligible shoppers',status:'OPEN',chi:5,budget:600,tile1:'#ce2430',tile2:'#8a1122',label:'ICE BREAKERS'},
+  {id:'clean',brand:'Germ-X',product:'Hand Sanitizer',category:'Other',mechanic:'Sample Program',headline:'Earn up to $180',funding:'Brand funded',timing:'Demo window',audience:'Eligible shoppers',status:'OPEN',chi:5,budget:500,tile1:'#7dc96d',tile2:'#16786b',label:'GERM-X'}
 ];
 
 let currentCategory = 'All';
 let selectedOffer = null;
 let stockState = null;
 let buildTimer = null;
+let accepted = [];
+try { accepted = JSON.parse(localStorage.getItem('gftOfferWallAccepted') || '[]'); } catch (_) { accepted = []; }
 
-const offerList = document.getElementById('offerList');
+const offerGrid = document.getElementById('offerGrid');
 const searchInput = document.getElementById('searchInput');
-const listView = document.getElementById('listView');
-const detailView = document.getElementById('detailView');
-const showNewBtn = document.getElementById('showNewBtn');
+const drawer = document.getElementById('offerDrawer');
+const backdrop = document.getElementById('drawerBackdrop');
 
-function productTile(offer) {
-  return `<div class="product-tile" style="background:${offer.bg};color:${offer.fg}">${offer.tile.replaceAll('\\n','<br>')}</div>`;
+function offerVisual(o, extra=''){
+  return `<div class="offer-visual ${extra}" style="--tile1:${o.tile1};--tile2:${o.tile2}"><b>${o.label}</b></div>`;
 }
 
-function renderOffers() {
+function renderOffers(){
   const q = searchInput.value.trim().toLowerCase();
-  const filtered = offers.filter(o => {
-    const categoryMatch = currentCategory === 'All' || o.category === currentCategory;
-    const queryMatch = !q || `${o.brand} ${o.product} ${o.headline}`.toLowerCase().includes(q);
-    return categoryMatch && queryMatch;
-  });
-
-  offerList.innerHTML = filtered.length ? filtered.map(o => `
-    <article class="offer-card" data-id="${o.id}">
-      ${productTile(o)}
+  const rows = offers.filter(o => (currentCategory==='All'||o.category===currentCategory) && (!q || `${o.brand} ${o.product} ${o.mechanic} ${o.headline}`.toLowerCase().includes(q)));
+  offerGrid.innerHTML = rows.length ? rows.map(o=>`
+    <article class="offer-card">
+      ${offerVisual(o)}
       <div class="offer-copy">
-        <div class="offer-brand">${o.brand} · ${o.product}</div>
-        <h3>${o.headline}</h3>
-        <div class="offer-meta"><span class="status-pill">${o.status}</span><small>${o.timing}</small></div>
+        <div class="offer-category">${o.category} • ${o.status}</div>
+        <h3>${o.brand} ${o.product}</h3>
+        <div class="offer-mechanic">${o.mechanic}</div>
+        <div class="offer-earn">${o.headline}</div>
+        <div class="offer-meta"><span>${o.timing}</span><span>Eligible store demo</span></div>
       </div>
-      <div class="offer-actions">
-        <button class="review-btn" data-review="${o.id}">Review</button>
-        <button class="more-link" data-review="${o.id}">Details</button>
+      <div class="offer-side">
+        <div class="chi-badge"><img src="assets/chili-rewards-mark.png" alt="" /> ${o.chi} CHI / shopper</div>
+        <button class="review-button" data-review="${o.id}">${accepted.some(a=>a.id===o.id)?'View':'Review'}</button>
+        <button class="more-button" data-review="${o.id}">More info</button>
       </div>
-    </article>`).join('') : `<div class="empty">No offers match this filter.</div>`;
-
-  const countLabel = document.getElementById('offerCountLabel');
-  if (countLabel) countLabel.textContent = `${filtered.length} ${filtered.length === 1 ? 'offer' : 'offers'}`;
+    </article>`).join('') : `<div class="empty-state">No offers match this view.</div>`;
+  document.querySelectorAll('[data-review]').forEach(btn=>btn.addEventListener('click',()=>openOffer(btn.dataset.review)));
+  updateMetrics();
 }
 
-function setFlow(stage) {
-  const order = ['ping','review','inventory','build','ready'];
-  const index = order.indexOf(stage);
-  document.querySelectorAll('.flow-step').forEach((el, i) => {
-    el.classList.toggle('active', i === index);
-    el.classList.toggle('complete', i < index);
+function updateMetrics(){
+  document.getElementById('newMetric').textContent = offers.filter(o=>o.status==='NEW').length;
+  document.getElementById('openMetric').textContent = offers.length;
+  document.getElementById('readyMetric').textContent = accepted.length;
+  document.getElementById('chiMetric').textContent = accepted.reduce((sum,a)=>sum+(a.chi||0),0).toLocaleString();
+}
+
+function setBRD(stage,title,body,chips){
+  const stages=['inbox','review','inventory','build','ready'];
+  const idx=stages.indexOf(stage);
+  document.querySelectorAll('.brd-step').forEach((el,i)=>{
+    el.classList.toggle('active',i===idx);
+    el.classList.toggle('complete',i<idx);
   });
+  document.getElementById('stageCounter').textContent=`${idx+1} / 5`;
+  document.getElementById('liveTitle').textContent=title;
+  document.getElementById('liveBody').textContent=body;
+  document.getElementById('liveChips').innerHTML=chips.map(x=>`<span>${x}</span>`).join('');
 }
 
-function updateBRD(title, body, chips, stage) {
-  document.getElementById('liveSpecTitle').textContent = title;
-  document.getElementById('liveSpecBody').textContent = body;
-  document.getElementById('specChips').innerHTML = chips.map(c => `<span>${c}</span>`).join('');
-  setFlow(stage);
-}
-
-function openOffer(id) {
+function openOffer(id){
+  selectedOffer=offers.find(o=>o.id===id);
+  stockState=null;
   clearTimeout(buildTimer);
-  selectedOffer = offers.find(o => o.id === id);
-  stockState = null;
-  listView.classList.add('hidden');
-  detailView.classList.remove('hidden');
-  renderDetail('review');
-  updateBRD(
-    `${selectedOffer.brand} offer opened`,
-    'The manager can now inspect the structured brand brief before making an inventory decision.',
-    [selectedOffer.category, selectedOffer.mechanic, selectedOffer.funding],
-    'review'
-  );
+  renderDrawer('review');
+  drawer.classList.remove('hidden');backdrop.classList.remove('hidden');
+  setBRD('review',`${selectedOffer.brand} offer opened`,'The manager is reviewing the brand brief before confirming whether the store can support the promotion.',[selectedOffer.category,selectedOffer.mechanic,'Human review']);
 }
 
-function renderDetail(mode = 'review') {
-  const o = selectedOffer;
-  if (!o) return;
+function closeDrawer(){drawer.classList.add('hidden');backdrop.classList.add('hidden');selectedOffer=null;stockState=null;clearTimeout(buildTimer)}
 
-  if (mode === 'building') {
-    detailView.innerHTML = `
-      <button class="back-btn" id="backBtn">← Back to offers</button>
-      <div class="detail-hero">
-        <div class="detail-hero-top">${productTile(o)}<div><div class="mini-kicker">AI CAMPAIGN BUILD</div><h3>${o.brand}</h3><div class="detail-sub">GFT is structuring the accepted offer into campaign fields.</div></div></div>
-      </div>
-      <div class="detail-section">
-        <div class="section-title">Build status</div>
-        <div class="build-progress" id="progressRows">
-          ${progressRow(1,'Normalize offer details','Working')}
-          ${progressRow(2,'Save inventory eligibility','Queued')}
-          ${progressRow(3,'Map reward + redemption mechanic','Queued')}
-          ${progressRow(4,'Create grocer campaign draft','Queued')}
-        </div>
-      </div>`;
-    document.getElementById('backBtn').addEventListener('click', backToOffers);
-    runBuildProgress();
-    return;
+function field(label,value){return `<div class="field"><span>${label}</span><b>${value}</b></div>`}
+
+function renderDrawer(mode){
+  const o=selectedOffer;if(!o)return;
+  if(mode==='building'){
+    drawer.innerHTML=`
+      <div class="drawer-top"><span class="drawer-label">AI CAMPAIGN BUILD</span><button class="close-button" id="closeDrawer" aria-label="Close">×</button></div>
+      <div class="drawer-hero"><div class="drawer-brand-line">${offerVisual(o)}<div><h2>${o.brand}</h2><p>Structuring the accepted offer for GFT Rewards.</p></div></div></div>
+      <div class="drawer-section"><h3>Build progress</h3><div class="build-list" id="buildList">
+        ${buildRow(1,'Normalize brand offer','Working')}${buildRow(2,'Save store inventory eligibility','Queued')}${buildRow(3,'Map Chili Rewards configuration','Queued')}${buildRow(4,'Create GFT Rewards campaign draft','Queued')}
+      </div></div>`;
+    document.getElementById('closeDrawer').addEventListener('click',closeDrawer);
+    runBuild();return;
   }
-
-  if (mode === 'ready') {
-    detailView.innerHTML = `
-      <button class="back-btn" id="backBtn">← Back to offers</button>
-      <div class="success-card">
-        <div class="success-icon">✓</div>
-        <div class="mini-kicker">CAMPAIGN DRAFT READY</div>
-        <h3>${o.brand}</h3>
-        <p>The demo has completed the AI-assisted handoff. A live implementation would send the approved structured payload into GFT Rewards.</p>
+  if(mode==='ready'){
+    const campaign=accepted.find(a=>a.id===o.id);
+    drawer.innerHTML=`
+      <div class="drawer-top"><span class="drawer-label">CAMPAIGN READY</span><button class="close-button" id="closeDrawer" aria-label="Close">×</button></div>
+      <div class="success-panel"><div class="success-check">✓</div><h2>${o.brand} is ready</h2><p>The working demo created a structured campaign draft with store eligibility and Chili Rewards settings. The final launch remains a human-approved GFT Rewards action.</p></div>
+      <div class="drawer-section"><h3>Campaign summary</h3><div class="field-grid">${field('Product',o.product)}${field('Mechanic',o.mechanic)}${field('Inventory',campaign?.stockLabel||'Approved')}${field('Shopper reward',`${o.chi} CHI`)}${field('Reward budget',`${o.budget.toLocaleString()} CHI demo`)}${field('Status','Draft ready')}</div>
+        <div class="reward-flow"><span>Offer accepted</span><i>→</i><span>GFT campaign</span><i>→</i><span>Shopper action</span><i>→</i><span>${o.chi} CHI reward</span></div>
       </div>
-      <div class="detail-section">
-        <div class="section-title">Campaign summary</div>
-        <div class="detail-grid">
-          ${field('Product', o.product)}
-          ${field('Category', o.category)}
-          ${field('Mechanic', o.mechanic)}
-          ${field('Funding', o.funding)}
-          ${field('Inventory', stockState === 'in' ? 'In stock' : 'Low stock')}
-          ${field('Status', 'Draft ready')}
-        </div>
-      </div>
-      <a class="open-gft" href="https://admin.gftrewards.com/" target="_blank" rel="noopener">Open GFT Rewards ↗</a>
-      <button class="secondary-action" id="anotherOffer">Review another offer</button>`;
-    document.getElementById('backBtn').addEventListener('click', backToOffers);
-    document.getElementById('anotherOffer').addEventListener('click', backToOffers);
-    return;
+      <a class="open-gft" href="https://admin.gftrewards.com/" target="_blank" rel="noopener">Open GFT Rewards</a>
+      <button class="secondary-action" id="viewCampaigns">View demo campaigns</button>`;
+    document.getElementById('closeDrawer').addEventListener('click',closeDrawer);
+    document.getElementById('viewCampaigns').addEventListener('click',()=>{closeDrawer();switchView('campaigns')});return;
   }
-
-  const out = stockState === 'out';
-  detailView.innerHTML = `
-    <button class="back-btn" id="backBtn">← Back to offers</button>
-    <div class="detail-hero">
-      <div class="detail-hero-top">
-        ${productTile(o)}
-        <div>
-          <div class="mini-kicker">${o.status === 'NEW' ? 'NEW BRAND OFFER' : 'OPEN OFFER'}</div>
-          <h3>${o.brand}</h3>
-          <div class="detail-sub">${o.headline}</div>
-        </div>
-      </div>
-      <div class="badge-row"><span class="badge">${o.category}</span><span class="badge">${o.funding}</span><span class="badge">${o.timing}</span></div>
-    </div>
-
-    <div class="detail-section">
-      <div class="section-title">AI structured brief</div>
-      <div class="detail-grid">
-        ${field('Product', o.product)}
-        ${field('Offer mechanic', o.mechanic)}
-        ${field('Funding', o.funding)}
-        ${field('Audience', o.audience)}
-      </div>
-      <div class="ai-summary" style="margin-top:10px">Manager task: confirm the product can be supported in store. The campaign build remains locked until an inventory state is selected.</div>
-    </div>
-
-    <div class="detail-section">
-      <div class="section-title">Inventory check</div>
-      <div class="stock-buttons">
-        <button class="stock-btn ${stockState==='in'?'selected':''}" data-stock="in">✓ In stock</button>
-        <button class="stock-btn ${stockState==='low'?'selected':''}" data-stock="low">◒ Low stock</button>
-        <button class="stock-btn ${stockState==='out'?'selected':''}" data-stock="out">× Out of stock</button>
-      </div>
-      <div class="inventory-note">Demo control: select the store's inventory condition for this offer.</div>
-    </div>
-
-    ${out ? `<div class="detail-section"><div class="decline-box"><b>Offer cannot advance.</b><br>The product is marked out of stock. A production workflow could decline, defer, or send a restock request back to the brand or category team.</div><button class="secondary-action" id="notifyBrand">Notify brand / defer</button></div>` : ''}
-
-    <button class="primary-action" id="buildBtn" ${!stockState || out ? 'disabled' : ''}>Accept & build campaign with AI</button>
-  `;
-
-  document.getElementById('backBtn').addEventListener('click', backToOffers);
-  detailView.querySelectorAll('[data-stock]').forEach(btn => btn.addEventListener('click', () => chooseStock(btn.dataset.stock)));
-  const buildBtn = document.getElementById('buildBtn');
-  if (buildBtn) buildBtn.addEventListener('click', startBuild);
-  const notifyBrand = document.getElementById('notifyBrand');
-  if (notifyBrand) notifyBrand.addEventListener('click', () => {
-    updateBRD('Offer deferred', 'The demo marked the offer as unable to advance because inventory was set to out of stock.', ['Out of stock','Defer','Brand feedback'], 'inventory');
-    alert('Demo: the offer would be deferred and a brand feedback event recorded.');
-  });
+  const out=stockState==='out';
+  drawer.innerHTML=`
+    <div class="drawer-top"><span class="drawer-label">OFFER REVIEW</span><button class="close-button" id="closeDrawer" aria-label="Close">×</button></div>
+    <div class="drawer-hero"><div class="drawer-brand-line">${offerVisual(o)}<div><h2>${o.brand} ${o.product}</h2><p>${o.mechanic} • ${o.headline}</p></div></div><div class="drawer-tags"><span>${o.category}</span><span>${o.funding}</span><span>${o.timing}</span><span>${o.status}</span></div></div>
+    <div class="drawer-section"><h3>AI-structured brand brief</h3><div class="field-grid">${field('Product',o.product)}${field('Offer mechanic',o.mechanic)}${field('Funding',o.funding)}${field('Audience',o.audience)}</div><div class="ai-note"><strong>Manager task:</strong><span>Confirm this product can be supported in store. The campaign build remains locked until inventory is selected.</span></div></div>
+    <div class="drawer-section"><h3>Inventory gate</h3><div class="stock-buttons"><button class="stock-button ${stockState==='in'?'selected':''}" data-stock="in">In stock</button><button class="stock-button ${stockState==='low'?'selected':''}" data-stock="low">Low stock</button><button class="stock-button ${stockState==='out'?'selected':''}" data-stock="out">Out of stock</button></div><p class="stock-help">Demo control: the manager must confirm inventory before accepting the offer.</p>${out?'<div class="danger-box"><b>Build blocked.</b> This offer is marked out of stock and cannot advance in the demo.</div>':''}</div>
+    <div class="drawer-section"><h3>Chili Rewards configuration</h3><div class="reward-config"><div class="reward-box"><span>SHOPPER REWARD</span><strong>${o.chi} CHI</strong><small>Demo value per qualifying shopper</small></div><div class="reward-box"><span>DEMO REWARD BUDGET</span><strong>${o.budget.toLocaleString()} CHI</strong><small>Illustrative only</small></div></div><div class="reward-flow"><span>Qualifying action</span><i>→</i><span>GFT wallet</span><i>→</i><span>${o.chi} CHI</span></div></div>
+    <button id="buildButton" class="primary-action" ${!stockState||out?'disabled':''}>Accept & build in GFT Rewards</button>
+    <button id="deferButton" class="secondary-action">Defer offer</button>`;
+  document.getElementById('closeDrawer').addEventListener('click',closeDrawer);
+  drawer.querySelectorAll('[data-stock]').forEach(btn=>btn.addEventListener('click',()=>chooseStock(btn.dataset.stock)));
+  document.getElementById('buildButton').addEventListener('click',startBuild);
+  document.getElementById('deferButton').addEventListener('click',()=>{showToast('Demo: offer deferred.');setBRD('inventory','Offer deferred','The offer remains outside campaign creation until the store chooses to review it again.',['Deferred','No campaign created','Manager controlled']);closeDrawer()});
 }
 
-function field(label, value) {
-  return `<div class="detail-field"><small>${label}</small><b>${value}</b></div>`;
+function chooseStock(state){
+  stockState=state;renderDrawer('review');
+  const labels={in:['Inventory confirmed','The store marked the product in stock. The offer is eligible to advance.',['In stock','Build unlocked','CHI configured']],low:['Low stock captured','The store marked inventory low. The constraint is carried into the campaign draft.',['Low stock','Constraint captured','Build unlocked']],out:['Out of stock','The offer is blocked from campaign build in this demo.',['Out of stock','Build blocked','Defer / revisit']]};
+  const [t,b,c]=labels[state];setBRD('inventory',t,b,c);
 }
 
-function chooseStock(state) {
-  stockState = state;
-  renderDetail('review');
-  if (state === 'in') {
-    updateBRD('Inventory confirmed', 'The store marked the item in stock. The offer is now eligible for AI-assisted campaign build.', ['In stock','Manager approved','Build unlocked'], 'inventory');
-  } else if (state === 'low') {
-    updateBRD('Low stock flagged', 'The store marked inventory as low. The prototype still allows the campaign to advance with this constraint visible in the handoff.', ['Low stock','Constraint captured','Build unlocked'], 'inventory');
-  } else {
-    updateBRD('Out of stock', 'The offer is blocked from campaign build until inventory changes or the manager chooses a different store/product path.', ['Out of stock','Build blocked','Brand feedback'], 'inventory');
-  }
+function startBuild(){if(!stockState||stockState==='out')return;renderDrawer('building');setBRD('build','AI campaign build in progress','The accepted offer, store inventory state, and Chili Rewards configuration are being mapped into a GFT Rewards campaign draft.',['Structured payload','Inventory eligibility','CHI reward rules'])}
+function buildRow(n,label,status){return `<div class="build-row" data-row="${n}"><div class="build-dot">${n}</div><div>${label}</div><div class="build-status">${status}</div></div>`}
+function runBuild(){const rows=[...drawer.querySelectorAll('.build-row')];let i=0;function tick(){if(i>=rows.length){finishBuild();return}rows.forEach((r,idx)=>{const s=r.querySelector('.build-status');r.classList.toggle('done',idx<i);r.classList.toggle('working',idx===i);s.textContent=idx<i?'Done':idx===i?'Working':'Queued'});i++;buildTimer=setTimeout(tick,520)}tick()}
+function finishBuild(){
+  const o=selectedOffer;const stockLabel=stockState==='in'?'In stock':'Low stock';
+  const existing=accepted.findIndex(a=>a.id===o.id);const item={id:o.id,brand:o.brand,product:o.product,chi:o.chi,budget:o.budget,stockLabel,createdAt:new Date().toISOString()};
+  if(existing>=0)accepted[existing]=item;else accepted.push(item);
+  try { localStorage.setItem('gftOfferWallAccepted',JSON.stringify(accepted)); } catch (_) {}
+  updateMetrics();renderCampaigns();
+  setBRD('ready','Campaign draft ready','The working demo completed the handoff package: offer details, inventory eligibility, and Chili Rewards configuration are ready for GFT Rewards.',['Draft ready','Human approval','Chili Rewards']);
+  renderDrawer('ready');
 }
 
-function startBuild() {
-  if (!stockState || stockState === 'out') return;
-  renderDetail('building');
-  updateBRD('AI handoff in progress', 'The demo is translating the approved offer and inventory state into GFT campaign fields.', ['Structured payload','Offer rules','Inventory eligibility'], 'build');
+function renderCampaigns(){
+  const el=document.getElementById('campaignList');
+  el.innerHTML=accepted.length?accepted.map(a=>`<div class="campaign-row"><div><b>${a.brand} ${a.product}</b><small>${a.stockLabel} • ${a.chi} CHI/shopper • ${a.budget.toLocaleString()} CHI demo budget</small></div><span>Draft ready</span></div>`).join(''):'<div class="empty-state">No demo campaigns yet. Accept an offer and complete the build flow to see it here.</div>';
 }
 
-function progressRow(n, label, status) {
-  return `<div class="progress-row" data-progress="${n}"><div class="progress-dot">${n}</div><div>${label}</div><div class="status">${status}</div></div>`;
+function switchView(name){
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active-view'));
+  document.getElementById(`${name}View`).classList.add('active-view');
+  document.querySelectorAll('.nav-button').forEach(b=>b.classList.toggle('active',b.dataset.nav===name));
+  if(name==='offers')setBRD('inbox','Offer inbox ready','Select an offer to start the store decision workflow.',['Offer intake','Inventory gate','Chili Rewards']);
 }
 
-function runBuildProgress() {
-  const rows = [...detailView.querySelectorAll('.progress-row')];
-  let i = 0;
-  function next() {
-    if (!rows[i]) {
-      updateBRD('Campaign draft ready', 'The simulated workflow has completed. The manager can now open GFT Rewards to continue with the campaign draft.', ['Draft ready','Human approval','Open GFT Rewards'], 'ready');
-      renderDetail('ready');
-      return;
-    }
-    rows.forEach((row, idx) => {
-      const status = row.querySelector('.status');
-      if (idx < i) { row.classList.add('done'); status.textContent = 'Done'; }
-      else if (idx === i) { status.textContent = 'Working'; }
-      else { status.textContent = 'Queued'; }
-    });
-    buildTimer = setTimeout(() => {
-      rows[i].classList.add('done');
-      rows[i].querySelector('.status').textContent = 'Done';
-      i += 1;
-      next();
-    }, 650);
-  }
-  next();
-}
+function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),1700)}
 
-function backToOffers() {
-  clearTimeout(buildTimer);
-  detailView.classList.add('hidden');
-  listView.classList.remove('hidden');
-  selectedOffer = null;
-  stockState = null;
-  updateBRD('Waiting for manager action', 'Choose an offer on the right to see the BRD state change with the product workflow.', ['Offer wall','Inventory gate','AI campaign handoff'], 'ping');
-}
+document.getElementById('filterPills').addEventListener('click',e=>{const b=e.target.closest('[data-category]');if(!b)return;currentCategory=b.dataset.category;document.querySelectorAll('.filter').forEach(x=>x.classList.toggle('active',x===b));renderOffers()});
+searchInput.addEventListener('input',renderOffers);
+backdrop.addEventListener('click',closeDrawer);
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!drawer.classList.contains('hidden'))closeDrawer()});
+document.querySelectorAll('.nav-button').forEach(btn=>btn.addEventListener('click',()=>switchView(btn.dataset.nav)));
+document.querySelectorAll('[data-go]').forEach(btn=>btn.addEventListener('click',()=>switchView(btn.dataset.go)));
 
-document.getElementById('categoryRow').addEventListener('click', e => {
-  if (!e.target.matches('[data-category]')) return;
-  currentCategory = e.target.dataset.category;
-  document.querySelectorAll('[data-category]').forEach(b => b.classList.toggle('active', b.dataset.category === currentCategory));
-  renderOffers();
-});
-
-searchInput.addEventListener('input', renderOffers);
-offerList.addEventListener('click', e => {
-  const btn = e.target.closest('[data-review]');
-  if (btn) openOffer(btn.dataset.review);
-});
-showNewBtn.addEventListener('click', () => {
-  currentCategory = 'All';
-  searchInput.value = '';
-  document.querySelectorAll('[data-category]').forEach(b => b.classList.toggle('active', b.dataset.category === 'All'));
-  renderOffers();
-  const firstNew = document.querySelector('[data-id="crush"]');
-  firstNew?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-});
-document.getElementById('notifBtn').addEventListener('click', () => {
-  alert('Demo: 3 new brand opportunities are ready for store review.');
-});
-
-renderOffers();
+renderOffers();renderCampaigns();updateMetrics();
+if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('service-worker.js').catch(()=>{}))}
