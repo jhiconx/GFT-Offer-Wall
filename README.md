@@ -1,27 +1,70 @@
-# GFT Offer Wall
+# Smith's Associate Hub - Modern PWA v2
 
-Working static PWA prototype for GitHub + Vercel.
+This version preserves the original Smith's operations / CMS / checklist prototype and adds the campaign job and cash workflow shown in the supplied mobile walkthrough.
 
-## What the demo does
+## Added in v2
+- My Jobs with All / Not Started / Started / Awaiting Review states
+- Jobs Available and job acceptance
+- $5 campaign earning cards and deadlines
+- Job detail pages
+- Downloadable prototype signage PDF
+- Sign placement instructions and examples
+- Required placement checkboxes
+- Multi-photo proof selection and previews
+- Proof submission -> Awaiting Review state
+- Personal notifications for jobs, submissions and payouts
+- My Cash balance, pending earnings, paid/pending history and search
+- Simulated bank connection flow
+- Home earnings summary and active jobs
 
-- Brand-funded promotion inbox for store managers / authorized associates
-- Search and category filters
-- Offer review drawer with AI-structured offer details
-- Required inventory gate: In stock / Low stock / Out of stock
-- Chili Rewards configuration with demo CHI shopper reward and budget
-- AI-assisted campaign-build simulation
-- Session-persistent demo campaigns using browser localStorage
-- Final handoff button to https://admin.gftrewards.com/
-- Installable PWA manifest and offline cache service worker
-- Responsive desktop and mobile layouts
+## Existing Smith's features retained
+- Kroger SSO entry concept
+- Home dashboard
+- Store Walk / Checklist
+- Voice-to-text simulation
+- Photo/video attachments
+- Playbooks, Standards, Merchandising, Weekly Ads and Media library
+- Bulletin Board
+- Rewards Wallet
+- Manager/Admin CMS preview
+- Rotating banners and PWA manifest/service worker
 
-## Important demo boundary
+## Prototype limitations
+Kroger SSO, payout rails, campaign review/approval, email delivery, CMS/backend persistence, blockchain recording and production analytics are simulated. No real credentials or money movement are collected.
 
-All offer dates, inventory states, reward quantities, budgets, and campaign builds shown in this repository are demo values. The prototype does not write to live GFT Rewards, POS, inventory, wallet, or blockchain systems.
+## Run locally
+`python3 -m http.server 8080`
 
-## Deploy to GitHub + Vercel
+Open `http://localhost:8080`.
 
-1. Create/open the GitHub repository named **GFT Offer Wall** and upload the contents of this folder at the repository root.
-2. In Vercel, import the GitHub repository. Framework Preset: **Other**. Build Command: leave blank. Output Directory: leave blank. Deploy.
 
-The project is plain HTML/CSS/JavaScript and requires no package install or build process.
+## V3 — Cash + CHI rewards
+
+This version adds the uploaded CHI Chili logo and a dual-reward model throughout the prototype:
+
+- Each demo campaign shows both its cash reward and CHI count.
+- My Rewards tracks total cash earned, cash pending, CHI earned, and CHI pending.
+- Every reward-history row records both cash and CHI for the associate.
+- Rewards Wallet displays cash and CHI side by side.
+- Campaign acceptance, proof submission and payout notifications reference both reward types.
+- Manager/Admin includes a Rewards view so an authorized user can see who earned what in cash and CHI.
+- Campaign CMS controls include separate Cash Reward and CHI Reward fields.
+
+The prototype uses **5 CHI per demo campaign job** only as a placeholder because no production CHI award rate was supplied. Change each job's `chi` field or connect this field to campaign configuration in production.
+
+
+## Latest update
+
+- Added a top-of-home **NEW FEATURE** spotlight for **GOT SHIFT** with the supplied logo and a direct link to `https://got-shift.vercel.app/`.
+
+
+## Latest update
+
+- Added a top-of-home **NEW FEATURE** spotlight for **OFFERWALL** above **GOT SHIFT**, with the supplied logo and direct link to `https://gft-offer-wall.vercel.app/`.
+
+## V6 fix
+
+- OFFERWALL is the first NEW FEATURE card on the home screen, directly above GOT SHIFT.
+- OFFERWALL links to https://gft-offer-wall.vercel.app/
+- GOT SHIFT links to https://got-shift.vercel.app/
+- OFFERWALL, GOT SHIFT, and CHI artwork is embedded directly in index.html so the logos remain visible even when index.html is copied without its assets folder.
