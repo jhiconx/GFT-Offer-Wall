@@ -1,0 +1,191 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#641c78" />
+  <meta name="description" content="GFT Rewards Offer Wall prototype for grocer offer intake and AI-assisted campaign build." />
+  <title>GFT Rewards — Offer Wall</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <main class="app-shell">
+    <section class="brd-panel" aria-label="Business requirements">
+      <div class="brd-inner">
+        <header class="brand-row">
+          <div class="brand-lockup">
+            <div class="brand-mark" aria-hidden="true">G</div>
+            <div>
+              <div class="eyebrow">GFT REWARDS • PRODUCT BRIEF</div>
+              <h1>Offer Wall</h1>
+            </div>
+          </div>
+          <span class="prototype-pill"><i></i> Live prototype</span>
+        </header>
+
+        <p class="lede">
+          A grocer-facing intake layer that turns brand opportunities into approved, inventory-aware GFT Rewards campaign drafts — without making store teams build campaigns from scratch.
+        </p>
+
+        <div class="summary-bar" aria-label="Product summary">
+          <div><small>INPUT</small><b>Brand-funded offer</b></div>
+          <span>→</span>
+          <div><small>STORE DECISION</small><b>Fit + inventory</b></div>
+          <span>→</span>
+          <div><small>OUTPUT</small><b>GFT campaign draft</b></div>
+        </div>
+
+        <div class="flow-strip" id="brdFlow">
+          <div class="flow-step active" data-flow="ping"><span>01</span><div><b>Brand ping</b><small>Opportunity arrives</small></div></div>
+          <div class="flow-step" data-flow="review"><span>02</span><div><b>Review</b><small>Offer + store fit</small></div></div>
+          <div class="flow-step" data-flow="inventory"><span>03</span><div><b>Inventory</b><small>Availability gate</small></div></div>
+          <div class="flow-step" data-flow="build"><span>04</span><div><b>AI build</b><small>Normalize + create</small></div></div>
+          <div class="flow-step" data-flow="ready"><span>05</span><div><b>Ready</b><small>Continue in GFT</small></div></div>
+        </div>
+
+        <div class="brd-grid">
+          <article class="brd-card priority-card">
+            <div class="card-kicker">WHY THIS EXISTS</div>
+            <h2>Make brand offers operational for grocery.</h2>
+            <p>Store managers and authorized associates need one fast decision surface to review brand-funded opportunities, validate inventory, and move accepted offers into GFT Rewards.</p>
+          </article>
+
+          <article class="brd-card">
+            <div class="card-kicker">ACTORS</div>
+            <div class="actor-row"><strong>Brand / Agency</strong><span>Funds + sends offer</span></div>
+            <div class="actor-row"><strong>Grocer</strong><span>Approves fit + inventory</span></div>
+            <div class="actor-row"><strong>GFT Rewards</strong><span>Builds campaign draft</span></div>
+          </article>
+
+          <article class="brd-card wide compact-card">
+            <div class="card-kicker">PRODUCT REQUIREMENTS</div>
+            <div class="requirement-list">
+              <div><span class="req-num">01</span><p><b>Prioritized offer inbox</b><br>Surface product, value, timing, funding and campaign mechanic at a glance.</p></div>
+              <div><span class="req-num">02</span><p><b>Inventory gate</b><br>Require in-stock, low-stock or out-of-stock confirmation before campaign creation.</p></div>
+              <div><span class="req-num">03</span><p><b>AI campaign structuring</b><br>Translate accepted offer details into clean GFT campaign fields and rules.</p></div>
+              <div><span class="req-num">04</span><p><b>Human approval + handoff</b><br>Keep the manager in control and open the completed draft in GFT Rewards.</p></div>
+            </div>
+          </article>
+
+          <article class="brd-card wide live-spec" id="liveSpec">
+            <div class="live-state-head">
+              <div>
+                <div class="card-kicker">LIVE DEMO STATE</div>
+                <h3 id="liveSpecTitle">Waiting for manager action</h3>
+              </div>
+              <span class="live-dot">LIVE</span>
+            </div>
+            <p id="liveSpecBody">Choose an offer on the right to see the BRD state change with the product workflow.</p>
+            <div class="spec-chips" id="specChips">
+              <span>Offer wall</span><span>Inventory gate</span><span>AI campaign handoff</span>
+            </div>
+          </article>
+        </div>
+
+        <div class="acceptance-block">
+          <div class="acceptance-head">
+            <div>
+              <div class="card-kicker">ACCEPTANCE CRITERIA</div>
+              <b>What the prototype demonstrates</b>
+            </div>
+            <span>6 / 6</span>
+          </div>
+          <div class="acceptance-grid">
+            <label><input type="checkbox" checked disabled> Search + category filtering</label>
+            <label><input type="checkbox" checked disabled> Full offer review</label>
+            <label><input type="checkbox" checked disabled> Required inventory decision</label>
+            <label><input type="checkbox" checked disabled> AI campaign build simulation</label>
+            <label><input type="checkbox" checked disabled> GFT admin handoff</label>
+            <label><input type="checkbox" checked disabled> Responsive manager UX</label>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="product-panel" aria-label="Offer Wall product demo">
+      <div class="product-ambient product-ambient-one"></div>
+      <div class="product-ambient product-ambient-two"></div>
+
+      <div class="product-topline">
+        <div>
+          <div class="eyebrow light">INTERACTIVE PRODUCT</div>
+          <div class="product-title">Store Manager • Offer Intake</div>
+        </div>
+        <div class="demo-label">SIMULATED</div>
+      </div>
+
+      <div class="phone-wrap">
+        <div class="device-shadow"></div>
+        <div class="phone" role="application" aria-label="GFT Offer Wall mobile prototype">
+          <div class="device-top">
+            <span class="device-time">9:41</span>
+            <span class="dynamic-island" aria-hidden="true"></span>
+            <span class="device-signal">●●●</span>
+          </div>
+
+          <div class="phone-screen">
+            <header class="mobile-header">
+              <div class="mobile-brand-row">
+                <div class="mobile-logo">G</div>
+                <div>
+                  <div class="mini-kicker">GFT REWARDS</div>
+                  <h2>Offer Wall</h2>
+                </div>
+              </div>
+              <button class="notif-btn" id="notifBtn" aria-label="Notifications">
+                <span class="bell-icon" aria-hidden="true">◉</span><em>3</em>
+              </button>
+            </header>
+
+            <div id="listView">
+              <div class="overview-row">
+                <div><small>NEW</small><b>3</b></div>
+                <div><small>OPEN</small><b>7</b></div>
+                <div><small>READY</small><b>2</b></div>
+              </div>
+
+              <label class="search-box">
+                <span aria-hidden="true">⌕</span>
+                <input id="searchInput" type="search" placeholder="Search offers, brands or products" autocomplete="off" />
+                <kbd>⌘K</kbd>
+              </label>
+
+              <div class="category-row" id="categoryRow">
+                <button class="chip active" data-category="All">All</button>
+                <button class="chip" data-category="Food">Food</button>
+                <button class="chip" data-category="Drinks">Drinks</button>
+                <button class="chip" data-category="Other">Other</button>
+              </div>
+
+              <div class="new-offer-banner">
+                <div class="spark">✦</div>
+                <div><b>3 new opportunities</b><small>Brand-funded offers ready for store review.</small></div>
+                <button id="showNewBtn">Review</button>
+              </div>
+
+              <div class="list-label-row"><span>AVAILABLE OFFERS</span><span id="offerCountLabel">7 offers</span></div>
+              <div class="offer-list" id="offerList"></div>
+            </div>
+
+            <div id="detailView" class="detail-view hidden" aria-live="polite"></div>
+          </div>
+
+          <nav class="bottom-nav" aria-label="Demo navigation">
+            <button><span>⌂</span><small>Home</small></button>
+            <button class="active"><span>▦</span><small>Offers</small><i></i></button>
+            <button><span>◇</span><small>Campaigns</small></button>
+            <button><span>⌖</span><small>Stores</small></button>
+          </nav>
+        </div>
+      </div>
+
+      <p class="prototype-note">Prototype only — no live inventory or campaigns are submitted.</p>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
